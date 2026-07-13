@@ -1,8 +1,8 @@
 class Openabcode < Formula
   desc "AI coding agent with task routing and hosted gateway"
   homepage "https://openabcode.com"
-  license "MIT"
   version "1.0.0"
+  license "MIT"
 
   on_macos do
     if Hardware::CPU.arm?
