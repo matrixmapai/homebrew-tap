@@ -2,7 +2,7 @@ class Openabcode < Formula
   desc "AI coding agent with task routing and hosted gateway"
   homepage "https://openabcode.com"
   version "1.0.0"
-  license "MIT"
+  license "AGPL-3.0-or-later"
 
   on_macos do
     if Hardware::CPU.arm?
@@ -25,7 +25,8 @@ class Openabcode < Formula
   end
 
   def install
-    bin.install "openabcode"
+    libexec.install "openabcode"
+    bin.install_symlink libexec/"openabcode/openabcode" => "openabcode"
   end
 
   test do
