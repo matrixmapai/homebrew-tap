@@ -25,8 +25,8 @@ class Openabcode < Formula
   end
 
   def install
-    libexec.install "openabcode"
-    bin.install_symlink libexec/"openabcode/openabcode" => "openabcode"
+    libexec.install Dir["*"]
+    bin.install_symlink libexec/"openabcode" => "openabcode"
   end
 
   test do
