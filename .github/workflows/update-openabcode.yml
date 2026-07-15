@@ -1,0 +1,81 @@
+name: Update OpenABCode
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: OpenABCode release tag
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  update-formula:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update formula
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          VERSION="${RELEASE_TAG#v}"
+          FORMULA_PATH="Formula/openabcode.rb"
+          RELEASE_BASE="https://github.com/matrixmapai/openabcode/releases/download/${RELEASE_TAG}"
+
+          declare -A SHAS
+          for asset in openabcode-darwin-arm64.tar.gz openabcode-darwin-x64.tar.gz openabcode-linux-arm64.tar.gz openabcode-linux-x64.tar.gz; do
+            sha=$(curl -fsSL "${RELEASE_BASE}/${asset}" | sha256sum | awk '{print $1}')
+            SHAS["${asset}"]="${sha}"
+          done
+
+          mkdir -p "$(dirname "${FORMULA_PATH}")"
+          cat > "${FORMULA_PATH}" << RUBY
+          class Openabcode < Formula
+            desc "AI coding agent with task routing and hosted gateway"
+            homepage "https://openabcode.com"
+            license "AGPL-3.0-or-later"
+            version "${VERSION}"
+
+            on_macos do
+              if Hardware::CPU.arm?
+                url "${RELEASE_BASE}/openabcode-darwin-arm64.tar.gz"
+                sha256 "${SHAS[openabcode-darwin-arm64.tar.gz]}"
+              else
+                url "${RELEASE_BASE}/openabcode-darwin-x64.tar.gz"
+                sha256 "${SHAS[openabcode-darwin-x64.tar.gz]}"
+              end
+            end
+
+            on_linux do
+              if Hardware::CPU.arm?
+                url "${RELEASE_BASE}/openabcode-linux-arm64.tar.gz"
+                sha256 "${SHAS[openabcode-linux-arm64.tar.gz]}"
+              else
+                url "${RELEASE_BASE}/openabcode-linux-x64.tar.gz"
+                sha256 "${SHAS[openabcode-linux-x64.tar.gz]}"
+              end
+            end
+
+            def install
+              libexec.install Dir["*"]
+              bin.install_symlink libexec/"openabcode" => "openabcode"
+            end
+
+            test do
+              assert_match version.to_s, shell_output("#{bin}/openabcode --version")
+            end
+          end
+          RUBY
+          sed -i 's/^          //' "${FORMULA_PATH}"
+
+          formula_sha=$(gh api "repos/${GITHUB_REPOSITORY}/contents/${FORMULA_PATH}" --jq '.sha')
+          formula_content=$(base64 -w 0 "${FORMULA_PATH}")
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/contents/${FORMULA_PATH}" \
+            -f message="openabcode ${VERSION}" \
+            -f content="${formula_content}" \
+            -f sha="${formula_sha}" \
+            -f branch=main
