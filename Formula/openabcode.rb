@@ -2,25 +2,25 @@ class Openabcode < Formula
   desc "AI coding agent with task routing and hosted gateway"
   homepage "https://openabcode.com"
   license "AGPL-3.0-or-later"
-  version "1.2.0"
+  version "1.3.0"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/matrixmapai/openabcode/releases/download/v1.2.0/openabcode-darwin-arm64.tar.gz"
-      sha256 "f089bc7bc792b22499202a2f4360bb01dca40dcabb663c1b854ddade14c2767c"
+      url "https://github.com/matrixmapai/openabcode/releases/download/v1.3.0/openabcode-darwin-arm64.tar.gz"
+      sha256 "04cb3252b1b2359e0bcb6f83731a4196767b2bc14c9f6f84d2f719845cc9f818"
     else
-      url "https://github.com/matrixmapai/openabcode/releases/download/v1.2.0/openabcode-darwin-x64.tar.gz"
-      sha256 "ba9025183d4f9aba9e927a226b9d340635f534b43f5f2988e80156e80216c118"
+      url "https://github.com/matrixmapai/openabcode/releases/download/v1.3.0/openabcode-darwin-x64.tar.gz"
+      sha256 "bf569737b863cfe05df8fb1edfd72ff079962d12141d53de78d99bde06faada7"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/matrixmapai/openabcode/releases/download/v1.2.0/openabcode-linux-arm64.tar.gz"
-      sha256 "0a320e20c7bada4d26c238a28a3e7b2b96c93d2d160a6aaaed6ad5d10db6d583"
+      url "https://github.com/matrixmapai/openabcode/releases/download/v1.3.0/openabcode-linux-arm64.tar.gz"
+      sha256 "151a8def016190d7b4bea73f4afbe54441dd96859e7a71c32e53a109d5542dff"
     else
-      url "https://github.com/matrixmapai/openabcode/releases/download/v1.2.0/openabcode-linux-x64.tar.gz"
-      sha256 "c9a721e4f62dc13689f9712904978b54a50d73bcc5b472f8a9a39d8dcc9df4de"
+      url "https://github.com/matrixmapai/openabcode/releases/download/v1.3.0/openabcode-linux-x64.tar.gz"
+      sha256 "c3714fe18fe558e3929adfacef43467908f09518569160ffbe1cde817bdd5dc2"
     end
   end
 
